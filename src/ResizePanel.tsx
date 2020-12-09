@@ -1,18 +1,34 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { DraggableCore } from "react-draggable";
 import debounce from "lodash.debounce";
 import $ from "cash-dom";
 import classNames from "classnames/bind";
+
+// @ts-ignore
 import style from "./ResizePanel.module.css";
+
 let cx = classNames.bind(style);
 
-class ResizePanel extends React.Component {
-  constructor(props) {
+export interface ResizePanelProps {
+  direction: "n" | "s" | "e" | "w";
+  handleClass?: string;
+  borderClass?: string;
+  containerClass?: string;
+  style?: CSSProperties;
+};
+
+interface State {
+  size: number;
+}
+
+class ResizePanel extends React.Component<ResizePanelProps, State> {
+  contentRef = React.createRef<HTMLDivElement>();
+  wrapperRef = React.createRef<HTMLDivElement>();
+
+  constructor(props: ResizePanelProps) {
     super(props);
     this.state = { size: 0 };
 
-    this.contentRef = React.createRef();
-    this.wrapperRef = React.createRef();
     this.validateSize = debounce(this.validateSize, 100).bind(this);
   }
 
